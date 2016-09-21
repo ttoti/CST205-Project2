@@ -14,12 +14,13 @@ while(True):
 	# Capture frame-by-frame
 	ret, frame = cap.read()
 
-		# Our operations on the frame come here
+	# Operations to add effects for detection
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	blur = cv2.GaussianBlur(gray,(15,15),0)
+	threshold = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-			# Display the resulting frame
-	cv2.imshow('frame',blur)
+	# Display the resulting frame
+	cv2.imshow('frame',threshold)
 	if cv2.waitKey(1) & 0xFF == ord('q'):
 		break
 
