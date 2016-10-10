@@ -1,6 +1,7 @@
 #
 # * Title: project2.py
-# * Abstract:
+# * Abstract: Using openCV and PyQT, we are making a version of rock paper scissors that uses coutours
+# *				to determine what shape 2 players pick
 # * Authors: Andrew Diesh, Kieran Burke, Tomas Hernandez
 # * Github url: https://github.com/ttoti/CST205-Project2
 
@@ -20,19 +21,20 @@ while(True):
 	# Capture frame-by-frame
 	ret, frame = cap.read()
 	if frame is not None:
-	# Operations to add effects for detection
+	# Operations to add effects for BackgroundSubtractor
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-	#	fist = fist_cascade.detectMultiScale(gray, 1.2, 5)
-		#if fist:
-		#	for(x,y,w,h) in fist:
-		#		cv2.rectangle(frame,(x,y),(x+w,y+h),(255,170,0),2)
 		blur = cv2.GaussianBlur(gray,(15,15),0)
 		threshold = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+
+		#Apply mask
 		fgmask = fgbg.apply(threshold)
+		#Find contours then draws
 		frame2, contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		cv2.drawContours(threshold, contours, -1, (255,255,255), 3)
+
 		# Display the resulting frame
 		cv2.imshow('Foreground',fgmask)
+
 		#cv2.imshow('frame',frame)
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
