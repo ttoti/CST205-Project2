@@ -11,7 +11,7 @@ import cv2
 #Defines camera to use
 cap = cv2.VideoCapture(0)
 #Creates BackgroundSubtractor
-fgbg = cv2.createBackgroundSubtractorMOG2()
+fgbg = cv2.createBackgroundSubtractorMOG2(history =5000)
 
 #Workaround for OpenCV error
 cv2.ocl.setUseOpenCL(False)
@@ -24,11 +24,10 @@ while(True):
 		
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		blur = cv2.GaussianBlur(gray,(11,11),0)
-		ret, threshold = cv2.threshold(blur,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-		#threshold = cv2.adaptiveThreshold(threshold, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+		ret, threshold = cv2.threshold(gray,127,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 		
 		fgmask = fgbg.apply(threshold)
-		frame2, contours, hierarchy = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		frame2, contours, hierarchy = cv2.findContours(fgmask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		max_area =0
 									
 			#hull(redline)
@@ -42,8 +41,8 @@ while(True):
 		cnt = contours[ci]
 		hull =cv2.convexHull(cnt)
 		frame2 =np.zeros(frame.shape,np.uint8)
-		cv2.drawContours(frame2,[cnt],0,(0,255,0),0)
-		cv2.drawContours(frame2,[hull],0,(0,0,255),0)	
+		cv2.drawContours(frame2,[cnt],0,(0,255,0),1)
+		cv2.drawContours(frame2,[hull],0,(0,0,255),1)	
 		
 		hull=cv2.convexHull(cnt,returnPoints = False)
 		defects = cv2.convexityDefects(cnt,hull)
@@ -56,8 +55,8 @@ while(True):
 			start = tuple(cnt[s][0])
 			end = tuple(cnt[e][0])
 			far = tuple(cnt[f][0])
-			cv2.line(frame,start,end,[0,255,0],2)                
-			cv2.circle(frame,far,5,[0,0,255],-1)
+			cv2.line(frame,start,end,[0,255,0],0)                
+			cv2.circle(frame,far,5,[0,0,255],0)
 			print(i)
 		
 		
