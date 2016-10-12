@@ -28,7 +28,7 @@ class Window(QWidget):
 
 
         self.counter = 0
-        self.progress.setValue(self.counter)
+        self.progress.setValue(0)
         #self.timer.start(3)
         self.progress.reset()
 
