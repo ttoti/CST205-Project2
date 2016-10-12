@@ -2,8 +2,8 @@
 
  This program uses OpenCV and PyQT to do a head-to-head game of Rock, Paper, Scissors
  * Project link - [Link]
-### Dependencies
 
+### Dependencies
 Rock, Paper, Scissors uses two open source libraries to run properly:
 * [python] -  v3.0+ : Programming language
 * [pyQT] - v5.0 : Library for user interface
