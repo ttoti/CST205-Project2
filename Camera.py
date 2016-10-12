@@ -11,7 +11,7 @@ import cv2
 #Defines camera to use
 cap = cv2.VideoCapture(0)
 #Creates BackgroundSubtractor
-fgbg = cv2.createBackgroundSubtractorMOG2(history =5000)
+fgbg = cv2.createBackgroundSubtractorMOG2(history =2500)
 
 #Workaround for OpenCV error
 cv2.ocl.setUseOpenCL(False)
@@ -29,7 +29,7 @@ while(True):
 		fgmask = fgbg.apply(threshold)
 		frame2, contours, hierarchy = cv2.findContours(fgmask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		max_area =0
-									
+	if(len(contours) >= 0):								
 			#hull(redline)
 		for i in range(len(contours)):
 			cnt = contours[i]
@@ -62,11 +62,11 @@ while(True):
 		
 			# Display the resulting frame
 		
-		cv2.imshow('mask',fgmask)
-		cv2.imshow('frame',frame)
-		cv2.imshow('thresh', threshold)
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-				break
+	cv2.imshow('mask',fgmask)
+	cv2.imshow('frame',frame)
+	cv2.imshow('thresh', threshold)
+	if cv2.waitKey(1) & 0xFF == ord('q'):
+			break
 
 # When everything done, release the capture
 cap.release()
