@@ -19,13 +19,16 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import *
 import sys
 
+#Tomas and Kieran did the opencv work, we tried different approaches to see which worked best.
+#this is a combination of the work 
+#Opens the camera
 class CameraDetection():
 
 	frame = None
 	def mainProgram():
 
 		cap = cv2.VideoCapture(0)
-
+#Creates a mask made for background subtraction with a faster refresh rate
 		fgbg = cv2.createBackgroundSubtractorMOG2(history = 1000)
 		cv2.ocl.setUseOpenCL(False)
 
@@ -51,7 +54,7 @@ class CameraDetection():
 				#Apply mask #Uncomment for to apply mask
 				fgmask = fgbg.apply(threshold)
 
-				#Crops the image
+				#Crops the image to find different Regions of Interest
 				crop_img2 = fgmask[100:600, 100:600]
 				crop_img = fgmask[100:600, 700:1200]
 
@@ -84,7 +87,7 @@ class CameraDetection():
 		frame2, contours, hierarchy = cv2.findContours(cropped_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		max_area = 0
 		cnt = 0
-
+#once we have our contours we draw a hull around them
 		try:
 			#hull(redline)
 			for i in range(len(contours)):
@@ -123,7 +126,7 @@ class CameraDetection():
 		payload.append(frame)
 		#print(payload[1])
 		return payload
-
+#Andrew did all of the QT work
 class Window(QWidget):
 
     def __init__(self):
