@@ -4,6 +4,12 @@
 # *				to determine what shape 2 players pick
 # * Authors: Andrew Diesh, Kieran Burke, Tomas Hernandez
 # * Github url: https://github.com/ttoti/CST205-Project2
+# * Made using:
+#http://docs.opencv.org/3.1.0/d4/d73/tutorial_py_contours_begin.html
+#http://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_contours/py_contours_more_functions/py_contours_more_functions.html
+#http://docs.opencv.org/trunk/d1/dc5/tutorial_background_subtraction.html
+#https://www.youtube.com/watch?v=OkHkuT59Rw0
+#https://www.youtube.com/watch?v=NbXez-lixP0
 # * Work file for Tomas Hernandez
 
 #!/usr/bin/env python3
