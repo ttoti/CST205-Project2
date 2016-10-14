@@ -20,8 +20,13 @@ class CameraDetection():
 
 		cap = cv2.VideoCapture(0)
 
-		fgbg = cv2.createBackgroundSubtractorMOG2(history =5000)
+		fgbg = cv2.createBackgroundSubtractorMOG2(history = 1000)
 		cv2.ocl.setUseOpenCL(False)
+
+		firstCropXAxis = 100
+		firstCropYAxis = 100
+		secondCropXAxis = 700
+		secondCropYAxis = 100
 
 		while(True):
 			# Capture frame-by-frame
@@ -44,14 +49,17 @@ class CameraDetection():
 				crop_img2 = fgmask[100:600, 100:600]
 				crop_img = fgmask[100:600, 700:1200]
 
-				firstImageArray = CameraDetection.getContours(crop_img, frame)
-				secondImageArray = CameraDetection.getContours(crop_img2, frame)
+				firstImageArray = CameraDetection.getContours(crop_img, frame, firstCropXAxis, firstCropYAxis)
+				secondImageArray = CameraDetection.getContours(crop_img2, frame, secondCropXAxis, secondCropXAxis)
 
 				#Shows cropped image as a frame
 				#cv2.imshow('crop_img', firstImageArray[0])
 				#cv2.imshow('crop_img2',secondImageArray[0])
+				#vis = np.concatenate((firstImageArray[2],secondImageArray[2]), axis = 0)
 
 				cv2.imshow('frame',frame)
+				print(secondImageArray[1])
+				print(firstImageArray[1])
 				#cv2.imshow('thresh', threshold)
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 					break
@@ -64,7 +72,7 @@ class CameraDetection():
 	def getFrame():
 		return self.frame
 
-	def getContours(cropped_image, frame):
+	def getContours(cropped_image, frame, xAxis, yAxis):
 
 		payload = []
 		frame2, contours, hierarchy = cv2.findContours(cropped_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -83,8 +91,8 @@ class CameraDetection():
 			cnt = contours[ci]
 			hull =cv2.convexHull(cnt)
 			frame2 =np.zeros(frame.shape,np.uint8)
-			cv2.drawContours(frame2,[cnt],0,(0,255,0),1)
-			cv2.drawContours(frame2,[hull],0,(0,0,255),1)
+			cv2.drawContours(frame2,[cnt],0,(0,255,0), 1)#offset = (xAxis, yAxis))
+			cv2.drawContours(frame2,[hull],0,(0,0,255), 1)#offset = (xAxis, yAxis))
 
 			hull=cv2.convexHull(cnt,returnPoints = False)
 			defects = cv2.convexityDefects(cnt,hull)
@@ -102,7 +110,7 @@ class CameraDetection():
 				#print(i)
 
 		except:
-			print("oops")
+			print("")
 
 		payload.append(cropped_image)
 		payload.append(len(contours))
@@ -117,18 +125,10 @@ class Window(QWidget):
 
         self.init_ui()
 
-    # write
 
-    def start_clicked(self): # 3 second countdown
-
-        #self.label.setText("Get ready to play")
-
-        #self.timer = QTimer()
-
-
+    def start_clicked(self):
         self.counter = 0
         self.progress.setValue(0)
-        #self.timer.start(3)
         self.progress.reset()
 
         while self.counter < 100:
@@ -136,28 +136,10 @@ class Window(QWidget):
 
             self.counter += .01
             self.progress.setValue(self.counter)
-            #if (self.counter == )
         self.label.setText("Time's up")
-        #trackScore()
 
-    #print("Time's up")
-    """
-    def start_clock(self):
-        self.counter = 3
-        #self.timer.start(3)
-        while self.counter > 0:
-            if self.counter > 0:
-                time.sleep(1)
-                print (self.counter)
-                self.counter -= 1
-            if self.counter == 0:
-                print("Time's up")
-        #trackScore()
-    """
-    #print("Time's up")
     def stop_clicked(self):
         self.progress.reset()
-        #self.counter = 100
         while self.counter >= 0:
             print (self.counter)
             self.counter -= 0.01
@@ -165,17 +147,12 @@ class Window(QWidget):
 
 
     def init_ui(self):
-        #self.labelTitle = QLabel("Rock Paper Scissors Game: ")
         self.setGeometry(0,0,600,500)
-        #self.labelTitle.move(0, 100)
 
-        #self.label.move(0, 0)
         self.labelTimer = QLabel('Timer: ')
 
         self.timer = QtCore.QTimer(self)
-        #self.timer.timeout.connect(self.start_clicked)
         self.timer.start(3)
-        #self.lcd = QtGui.QLCDNumber(self)
 
 
         self.labelP1Score = QLabel('Player 1 Score: ')
@@ -183,13 +160,11 @@ class Window(QWidget):
 
 
         self.label = QLabel('Press start to play, stop to quit')
-        # buttons
 
 
         self.start = QPushButton('Start', self)
         self.stop = QPushButton('Stop', self)
-        #self.reset = QRadioButton('Reset')
-        #self.button = QPushButton('Select')
+
         self.progress = QProgressBar(self)
         self.progress.setGeometry(200, 80, 250, 20)
         self.progress.move(300, 200)
@@ -204,18 +179,8 @@ class Window(QWidget):
         scoreLabel.setSpacing(100)
 
         vbox = QVBoxLayout()
-        #vbox.addWidget(self.labelTitle)
         vbox.addWidget(self.labelTimer)
-        #vbox.
         vbox.addWidget(self.progress)
-        #vbox.addLayout(vbox)
-        #.addLayout(hbox)
-        #vbox.addWidget(self.labelP1Score)
-        #vbox.addWidget(self.labelP2Score)
-        #vbox.addWidget(self.start)
-        #vbox.addWidget(self.stop)
-        #layout.addWidget(self.reset)
-        #layout.addWidget(self.button)
 
         hbox = QHBoxLayout()
         hbox.addWidget(self.labelP1Score)
@@ -224,7 +189,6 @@ class Window(QWidget):
         hbox.addWidget(self.labelP2Score)
         self.score2 = QLabel('0')
         hbox.addWidget(self.start)
-        #hbox.addStretch(1)
         hbox.addWidget(self.stop)
 
 
@@ -233,7 +197,6 @@ class Window(QWidget):
 
 
         vbox.addWidget(self.label)
-        #self.setLayout(vbox)
         self.setLayout(hbox)
 
         self.setGeometry(500, 500, 250, 250)
@@ -241,12 +204,7 @@ class Window(QWidget):
 
 
         self.stop.clicked.connect(self.stop_clicked)
-        #self.button.clicked.connect(lambda: self.btn_clk(self.start.isChecked(), self.label))
-        #self.button.clicked.connect(self.reset_clck(self.reset.isChecked(), self.labelReset)
-        #self.button.clicked.connect(self.timer)
 
-
-        #self.progress.move(200, 400)
         self.start.clicked.connect(self.start_clicked)
         self.show()
 
@@ -307,7 +265,15 @@ class Window(QWidget):
         else:
             print ("It's a tie.")
 
-CameraDetection.mainProgram()
-#app = QApplication(sys.argv)
-#a_window = Window()
-#sys.exit(app.exec_())
+
+print("What part of the program would you like to run?")
+print("\t a. OpenCV")
+print("\t b. PyQt")
+inputNum = input("Enter choice: ")
+if(inputNum == "a"): CameraDetection.mainProgram()
+elif(inputNum == "b"):
+	app = QApplication(sys.argv)
+	a_window = Window()
+	sys.exit(app.exec_())
+else:
+	print("Not a valid number. Try again")
