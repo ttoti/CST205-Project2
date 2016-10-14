@@ -21,6 +21,7 @@ import sys
 
 #Tomas and Kieran did the opencv work, we tried different approaches to see which worked best.
 #this is a combination of the work 
+# Andrew: worked with PyQt5. created a window with a labels, and a start and stop button. 
 #Opens the camera
 class CameraDetection():
 
@@ -135,17 +136,17 @@ class Window(QWidget):
         self.init_ui()
 
 
-    def start_clicked(self):
+    def start_clicked(self): #when user clicks the start button
         self.counter = 0
         self.progress.setValue(0)
         self.progress.reset()
 
-        while self.counter < 100:
+        while self.counter < 100: # timer going from 0-100 for the progress barr
             print (self.counter)
 
             self.counter += .01
             self.progress.setValue(self.counter)
-        self.label.setText("Time's up")
+        self.label.setText("Time's up") # print message when finished. 
 
     def stop_clicked(self):
         self.progress.reset()
@@ -158,7 +159,7 @@ class Window(QWidget):
     def init_ui(self):
         self.setGeometry(0,0,600,500)
 
-        self.labelTimer = QLabel('Timer: ')
+        self.labelTimer = QLabel('Timer: ') # labels for our window
 
         self.timer = QtCore.QTimer(self)
         self.timer.start(3)
@@ -171,14 +172,15 @@ class Window(QWidget):
         self.label = QLabel('Press start to play, stop to quit')
 
 
-        self.start = QPushButton('Start', self)
+        self.start = QPushButton('Start', self) #our buttons
         self.stop = QPushButton('Stop', self)
 
         self.progress = QProgressBar(self)
         self.progress.setGeometry(200, 80, 250, 20)
         self.progress.move(300, 200)
-
-        scoreLabel = QHBoxLayout()
+		
+		# our layout. scoreLabel, buttonLabelBox, currentScoreLabel, progressBar are displayed horizontally. 
+		scoreLabel = QHBoxLayout()
         buttonLabelBox = QHBoxLayout()
         currentScoreLabel = QHBoxLayout()
         progressBar = QHBoxLayout()
@@ -186,7 +188,8 @@ class Window(QWidget):
         scoreLabel.addWidget(self.labelP1Score)
         scoreLabel.addWidget(self.labelP2Score)
         scoreLabel.setSpacing(100)
-
+		
+		#display or progess bar or timer vertically.
         vbox = QVBoxLayout()
         vbox.addWidget(self.labelTimer)
         vbox.addWidget(self.progress)
@@ -217,7 +220,7 @@ class Window(QWidget):
         self.start.clicked.connect(self.start_clicked)
         self.show()
 
-    def trackScore(user_choice1, user_choice2):
+    def trackScore(user_choice1, user_choice2): # determine who won after 3 games. 
         player1Score = 0
         player2Score = 0
 
