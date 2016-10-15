@@ -10,7 +10,6 @@
 #http://docs.opencv.org/trunk/d1/dc5/tutorial_background_subtraction.html
 #https://www.youtube.com/watch?v=OkHkuT59Rw0
 #https://www.youtube.com/watch?v=NbXez-lixP0
-# * Work file for Tomas Hernandez
 
 #!/usr/bin/env python3
 import numpy as np
@@ -19,16 +18,16 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtWidgets import *
 import sys
 
+
 #Tomas and Kieran did the opencv work, we tried different approaches to see which worked best.
-#this is a combination of the work 
+#this is a combination of the work
 #Opens the camera
 class CameraDetection():
-
 	frame = None
 	def mainProgram():
 
 		cap = cv2.VideoCapture(0)
-#Creates a mask made for background subtraction with a faster refresh rate
+		#Creates a mask made for background subtraction with a faster refresh rate
 		fgbg = cv2.createBackgroundSubtractorMOG2(history = 1000)
 		cv2.ocl.setUseOpenCL(False)
 
@@ -64,11 +63,10 @@ class CameraDetection():
 				#Shows cropped image as a frame
 				#cv2.imshow('crop_img', firstImageArray[0])
 				#cv2.imshow('crop_img2',secondImageArray[0])
-				#vis = np.concatenate((firstImageArray[2],secondImageArray[2]), axis = 0)
 
 				cv2.imshow('frame',frame)
-				print(secondImageArray[1])
-				print(firstImageArray[1])
+				#print(secondImageArray[1])
+				#print(firstImageArray[1])
 				#cv2.imshow('thresh', threshold)
 				if cv2.waitKey(1) & 0xFF == ord('q'):
 					break
@@ -87,7 +85,7 @@ class CameraDetection():
 		frame2, contours, hierarchy = cv2.findContours(cropped_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 		max_area = 0
 		cnt = 0
-#once we have our contours we draw a hull around them
+		#once we have our contours we draw a hull around them
 		try:
 			#hull(redline)
 			for i in range(len(contours)):
@@ -100,8 +98,8 @@ class CameraDetection():
 			cnt = contours[ci]
 			hull =cv2.convexHull(cnt)
 			frame2 =np.zeros(frame.shape,np.uint8)
-			cv2.drawContours(frame2,[cnt],0,(0,255,0), 1)#offset = (xAxis, yAxis))
-			cv2.drawContours(frame2,[hull],0,(0,0,255), 1)#offset = (xAxis, yAxis))
+			cv2.drawContours(frame2,[cnt],0,(0,255,0), 1, offset = (xAxis, yAxis))
+			cv2.drawContours(frame2,[hull],0,(0,0,255), 1, offset = (xAxis, yAxis))
 
 			hull=cv2.convexHull(cnt,returnPoints = False)
 			defects = cv2.convexityDefects(cnt,hull)
@@ -126,12 +124,12 @@ class CameraDetection():
 		payload.append(frame)
 		#print(payload[1])
 		return payload
+
 #Andrew did all of the QT work
 class Window(QWidget):
 
     def __init__(self):
         super().__init__()
-
         self.init_ui()
 
 
@@ -274,15 +272,16 @@ class Window(QWidget):
         else:
             print ("It's a tie.")
 
+def qt():
+	app = QApplication(sys.argv)
+	a_window = Window()
+	sys.exit(app.exec_())
+
 
 print("What part of the program would you like to run?")
 print("\t a. OpenCV")
 print("\t b. PyQt")
 inputNum = input("Enter choice: ")
 if(inputNum == "a"): CameraDetection.mainProgram()
-elif(inputNum == "b"):
-	app = QApplication(sys.argv)
-	a_window = Window()
-	sys.exit(app.exec_())
-else:
-	print("Not a valid number. Try again")
+elif(inputNum == "b"): qt()
+else: print("Not a valid number. Try again")

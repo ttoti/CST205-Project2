@@ -18,6 +18,7 @@ $ python3 projectName.py
 ### Todos
 
  - Write more 10/10 code
+ - Combine pyQT and openCV
 
 
 
@@ -27,4 +28,3 @@ $ python3 projectName.py
    [openCV]: <http://www.opencv.org/>
    [pyQT]: <https://www.riverbankcomputing.com/software/pyqt/download5>
    [Link]: <https://www.github.com/ttoti/CST205-Project2>
-
